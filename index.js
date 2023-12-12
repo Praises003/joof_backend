@@ -14,13 +14,7 @@ connectDb()
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-app.use(cors({
-  origin: 'https://joof.onrender.com/'
-}));
-
-// app.use(fileUpload({
-//     useTempFiles: true,
-//     tempFileDir: "/tmp",
+app.use(cors())
 
 // }))
 app.use(cookieParser())
