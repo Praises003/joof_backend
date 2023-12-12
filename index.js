@@ -12,7 +12,7 @@ const eventRoute = require("./routes/eventRoute")
 
 connectDb()
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://joof.onrender.com/'],
+  origin: ['http://localhost:3000', 'https://joof.onrender.com'],
   credentials: true,
 };
 const app = express()
