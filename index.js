@@ -11,13 +11,17 @@ const eventRoute = require("./routes/eventRoute")
 
 
 connectDb()
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(cors())
 
 // }))
-app.use(cookieParser())
+app.use(cookieParser(corsOptions))
 app.use('/api/user', userRoute)
 app.use('/api/event', eventRoute)
 
