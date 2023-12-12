@@ -20,8 +20,8 @@ app.use(express.urlencoded({extended: true}))
 
 // }))
 app.use(cookieParser())
-app.use('/user', userRoute)
-app.use('/event', eventRoute)
+app.use('/api/user', userRoute)
+app.use('/api/event', eventRoute)
 
 const PORT = process.env.PORT || 8000
 const server = http.createServer(app)
