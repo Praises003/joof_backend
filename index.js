@@ -27,7 +27,8 @@ app.use('/api/event', eventRoute)
 
 const PORT = process.env.PORT || 8000
 const server = http.createServer(app)
-
+app.use(notFound)
+app.use(errorHandler)
 server.listen(PORT, (req, res) => {
     console.log(`Listening on port ${PORT}`)
      
