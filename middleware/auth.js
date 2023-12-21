@@ -8,16 +8,18 @@ const protect = asyncHandler(async(req, res, next) => {
     
 
     token = req.cookies.auth
-    console.log(token)
+    //console.log(token)
     //console.log(process.env.JWT_SECRET)
     if(token) {
         try {
 
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            //console.log(decoded)
+            console.log(token)
+            console.log(process.env.JWT_SECRET)
+            console.log(decoded)
             //console.log(await User.findById('658176fc281b867192482885'))
             req.user = await User.findById(decoded.userId).select("-password")
-            //console.log(req.user)
+            console.log(req.user)
             authUser = await User.findById(decoded.userId).select("-password")
             next()
         } catch (err) {
@@ -28,6 +30,8 @@ const protect = asyncHandler(async(req, res, next) => {
         res.status(401)
         throw new Error("Not Authorized")
     }
+
+    console.log(token)
 })
 
 const admin = (req, res, next) => {

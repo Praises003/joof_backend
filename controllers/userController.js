@@ -30,7 +30,7 @@ const registerUser = asyncHandler(async(req, res) => {
     })
 
     if (user) {
-        console.log(user)
+        //console.log(user)
         let token = generateToken(res, user._id)
         console.log(token)
         res.status(201).json({
@@ -106,7 +106,7 @@ const getAllUsers = asyncHandler(async(req, res) => {
 
 const allUsers =asyncHandler(async(req, res) => {
     const user = await User.find()
-    console.log(req.user)
+    //console.log(req.user)
 
 
     res.send(user)
