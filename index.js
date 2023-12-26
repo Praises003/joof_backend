@@ -13,16 +13,10 @@ const guestRoute = require("./routes/guestRoute")
 
 connectDb()
 const corsOptions = {
-   origin: ['http://localhost:3000', 'https://joof.onrender.com/'],
+   origin: ['http://localhost:3000', 'https://joof.onrender.com'],
    credentials: true,
  };
 const app = express()
-if(process.env.NODE_ENV !== "development") {
-  app.use(cors({
-    origin: "http://localhost:3000",
-    credentials: true
-  }))
-}
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
