@@ -15,7 +15,6 @@ connectDb()
 const corsOptions = {
    origin: ['http://localhost:3000', 'https://joof.onrender.com'],
    credentials: true,
-   allowedHeaders: ['Access-Control-Allow-Origin', 'Content-Type', 'Authorization']
  };
 const app = express()
 app.use(cors(corsOptions))
