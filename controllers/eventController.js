@@ -49,6 +49,10 @@ const getAll = asyncHandler(async(req, res) => {
     res.json(event)
 })
 
+const getSingleEvent = asyncHandler(async(req, res) => {
+    
+})
+
 const renameEvent = asyncHandler(async(req, res) => {
     const { eventId, title, description, type, date } = req.body
 

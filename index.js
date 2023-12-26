@@ -8,11 +8,12 @@ const connectDb = require("./config/db")
 const {notFound, errorHandler} = require('./middleware/error')
 const userRoute = require("./routes/userRoute")
 const eventRoute = require("./routes/eventRoute")
+const guestRoute = require("./routes/guestRoute")
 
 
 connectDb()
 const corsOptions = {
-   origin: ['http://localhost:3000'],
+   origin: ['http://localhost:3000', 'https://joof.onrender.com/'],
    credentials: true,
  };
 const app = express()
@@ -31,6 +32,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(cookieParser())
 app.use('/api/user', userRoute)
 app.use('/api/event', eventRoute)
+app.use('/api/guest', guestRoute)
 
 const PORT = process.env.PORT || 8000
 const server = http.createServer(app)
