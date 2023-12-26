@@ -14,7 +14,6 @@ const generateToken = (res, userId) => {
         maxAge: 30 * 24 * 60 * 60 * 1000,
     })
 
-    console.log(token)
     //console.log(process.env.NODE_ENV)
 }
 
