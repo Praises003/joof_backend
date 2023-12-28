@@ -15,7 +15,7 @@ const generateToken = (res, userId) => {
         sameSite: process.env.NODE_ENV !== "development" ? "none": 'strict',
         maxAge: 30 * 24 * 60 * 60 * 1000,
         path: "/", 
-        domain: process.env.NODE_ENV !== "development" ? ".vercel.app" : ".localhost"
+        //domain: process.env.NODE_ENV !== "development" ? "joof-backend.vercel.app" : ".localhost"
         //domain: 'localhost'
         //domain: 'https://joof-backend.onrender.com'
     })
