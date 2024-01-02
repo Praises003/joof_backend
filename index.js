@@ -4,11 +4,13 @@ dotenv.config()
 const http = require("http")
 const cors = require("cors")
 const cookieParser = require('cookie-parser')
+const stripe = require('stripe')(process.env.STRIPE_SEC_KEY)
 const connectDb = require("./config/db")
 const {notFound, errorHandler} = require('./middleware/error')
 const userRoute = require("./routes/userRoute")
 const eventRoute = require("./routes/eventRoute")
 const guestRoute = require("./routes/guestRoute")
+const stripeRoute = require("./routes/stripeRoute")
 
 
 connectDb()
@@ -28,6 +30,7 @@ app.use(cookieParser())
 app.use('/api/user', userRoute)
 app.use('/api/event', eventRoute)
 app.use('/api/guest', guestRoute)
+app.use('/create-checkout-session', stripeRoute)
 
 const PORT = process.env.PORT || 8000
 const server = http.createServer(app)
