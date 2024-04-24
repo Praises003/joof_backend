@@ -33,8 +33,8 @@ const stripeCon = asyncHandler(async (req, res) => {
             payment_method_types:["card"],
             line_items: lineItems,
             mode: 'payment',
-            success_url: `http://localhost:3000/success`,
-            cancel_url: `http://localhost:3000/fail`,
+            success_url: `https://joof.onrender.com/success`,
+            cancel_url: `https://joof.onrender.com/fail`,
         });
         console.log("Stripe Session ID:", session.id);
         console.log("Line Items:", lineItems);

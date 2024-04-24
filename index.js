@@ -12,6 +12,8 @@ const eventRoute = require("./routes/eventRoute")
 const guestRoute = require("./routes/guestRoute")
 const stripeRoute = require("./routes/stripeRoute")
 
+const tranRoute = require("./routes/tranRoute")
+
 
 connectDb()
 const corsOptions = {
@@ -31,6 +33,7 @@ app.use('/api/user', userRoute)
 app.use('/api/event', eventRoute)
 app.use('/api/guest', guestRoute)
 app.use('/create-checkout-session', stripeRoute)
+app.use('/transaction', tranRoute)
 
 const PORT = process.env.PORT || 8000
 const server = http.createServer(app)
