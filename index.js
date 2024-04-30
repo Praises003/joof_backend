@@ -11,6 +11,7 @@ const userRoute = require("./routes/userRoute")
 const eventRoute = require("./routes/eventRoute")
 const guestRoute = require("./routes/guestRoute")
 const stripeRoute = require("./routes/stripeRoute")
+const textRoute = require("./routes/textRoute")
 
 const tranRoute = require("./routes/tranRoute")
 
@@ -32,6 +33,7 @@ app.use(cookieParser())
 app.use('/api/user', userRoute)
 app.use('/api/event', eventRoute)
 app.use('/api/guest', guestRoute)
+app.use('/api/text', textRoute)
 app.use('/create-checkout-session', stripeRoute)
 app.use('/transaction', tranRoute)
 
