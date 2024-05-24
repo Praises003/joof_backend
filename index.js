@@ -1,6 +1,7 @@
 const express = require('express')
 const dotenv = require("dotenv")
 dotenv.config()
+const path = require("path")
 const http = require("http")
 const cors = require("cors")
 const cookieParser = require('cookie-parser')
@@ -12,6 +13,7 @@ const eventRoute = require("./routes/eventRoute")
 const guestRoute = require("./routes/guestRoute")
 const stripeRoute = require("./routes/stripeRoute")
 const textRoute = require("./routes/textRoute")
+const imageRoute = require("./routes/imageRoute")
 
 const tranRoute = require("./routes/tranRoute")
 
@@ -26,6 +28,7 @@ const app = express()
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // }))
@@ -36,6 +39,7 @@ app.use('/api/guest', guestRoute)
 app.use('/api/text', textRoute)
 app.use('/create-checkout-session', stripeRoute)
 app.use('/transaction', tranRoute)
+app.use('/api/upload', imageRoute)
 
 const PORT = process.env.PORT || 8000
 const server = http.createServer(app)
