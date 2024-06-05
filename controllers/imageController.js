@@ -153,7 +153,7 @@ const uploadByLink = async(req, res) => {
 }
 
 const getAllImages = asyncHandler(async(req, res) => {
-    const images = await Image.findOne().sort({ createdAt: -1 });
+    const images = await Image.findOne().sort({ '_id': -1 });
     if(images) {
         res.status(200).json(images)
     }
@@ -260,7 +260,7 @@ const imageUploadI = asyncHandler(async(req, res) => {
 
 // Image I Get Single Image
 const getImagesI = asyncHandler(async(req, res) => {
-  const images = await ImageI.findOne().sort({ createdAt: -1 });
+  const images = await ImageI.findOne().sort({ '_id': -1 });
   if(images) {
       res.status(200).json(images)
   }
@@ -316,7 +316,7 @@ const getMultiImageI = asyncHandler(async(req, res) => {
   })
 
   const getImagesII = asyncHandler(async(req, res) => {
-    const images = await Image.findOne().sort({ createdAt: -1 });
+    const images = await Image.findOne().sort({ '_id': -1 });
     if(images) {
         res.status(200).json(images)
     }
