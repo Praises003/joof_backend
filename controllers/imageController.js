@@ -187,8 +187,12 @@ const imageUploadI = asyncHandler(async(req, res) => {
     }
     const baseUrl = `${req.protocol}://${req.get('host')}`
 
+    const uploadedFilePath = path.join('/tmp', req.file.filename);
+
+    const fileUrl = `${baseUrl}${uploadedFilePath.replace(/\\/g, '/')}`
+
     let singleImage = {
-        url: `${baseUrl}/${req.file.path}`,
+        url: fileUrl,
         fileName: req.file.originalname
       }
 
