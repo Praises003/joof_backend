@@ -2,7 +2,7 @@ const express = require("express")
 const { protect, admin } = require("../middleware/auth")
 const upload = require('../middleware/image');
 const multiUpload = require('../middleware/multiImage')
-const { uploadByLink, imageUpload, multiImageUpload, getAllImages, imageUploadCon, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI } = require("../controllers/imageController");
+const { uploadByLink, imageUpload, multiImageUpload, getAllImages, imageUploadCon, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI, deleteMultiImage } = require("../controllers/imageController");
 const router = express.Router()
 
 router.route('/').get(getAllImages)
@@ -17,5 +17,6 @@ router.post("/imageII",upload.single('file'),  imageUploadII)
 router.get("/imagesII", getImagesII)
 router.post("/imageI/multi", multiUpload, multiImageUploadI)
 router.get("/imageI/multi", getMultiImageI)
+router.delete("/multi", deleteMultiImage)
 
 module.exports = router

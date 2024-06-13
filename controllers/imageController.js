@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const path = require('path')
+const { URL } = require('url');
 const fs = require('fs')
 const Image = require('../models/imageModel')
 const imageDownloader = require('image-downloader');
@@ -326,6 +327,87 @@ const getMultiImageI = asyncHandler(async(req, res) => {
     }
 })
 
+// Delete Image Handler
+// const deleteImage = asyncHandler(async (req, res) => {
+//   const { url } = req.body;
 
+//   // Find the image in the database
+//   const image = await Image.findOne({ 'singleImage.url': url });
+//   if (!image) {
+//     return res.status(404).json({ message: 'Image not found' });
+//   }
 
-  module.exports = {imageUpload, imageUploadCon,multiImageUpload ,uploadByLink, getAllImages, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI}
+//   // Remove the image document
+//   await Image.deleteOne({ _id: image._id });
+
+//   // Remove the image file
+//   const filePath = path.join(__dirname, '..', url.split(req.get('host'))[1]);
+//   fs.unlink(filePath, (err) => {
+//     if (err) {
+//       console.error('Error deleting image file:', err);
+//       return res.status(500).json({ message: 'Error deleting image file' });
+//     }
+
+//     res.status(200).json({ message: 'Image deleted successfully' });
+//   });
+// });
+
+const deleteMultiImage = asyncHandler(async (req, res) => {
+  const { url } = req.body;
+
+  console.log('URL received:', url); // Debug log
+
+  // Verify URL is valid
+  if (!url) {
+    return res.status(400).json({ message: 'Invalid URL' });
+  }
+
+  // Find the image document that contains the URL in its multipleImages array
+  const image = await Image.findOne({ 'multipleImages.url': url });
+  if (!image) {
+    return res.status(404).json({ message: 'Image not found' });
+  }
+
+  // Remove the image URL from the multipleImages array
+  image.multipleImages = image.multipleImages.filter(img => img.url !== url);
+
+  // If no images are left, delete the document entirely, otherwise save the updated document
+  if (image.multipleImages.length === 0) {
+    await Image.deleteOne({ _id: image._id });
+  } else {
+    await image.save();
+  }
+
+  // Parse the URL to extract the relative file path
+  // const parsedUrl = new URL(url);
+  // const relativeFilePath = parsedUrl.pathname; // Extract pathname
+
+  // console.log('Relative file path:', relativeFilePath); // Debug log
+
+  // if (!relativeFilePath) {
+  //   return res.status(400).json({ message: 'Could not extract file path from URL' });
+  // }
+
+  // const filePath = path.join(__dirname, '..', relativeFilePath);
+  // console.log('Full file path:', filePath); // Debug log
+
+  //  // Log the constructed file path
+  //  console.log(`Constructed file path: ${filePath}`);
+
+   // Check if the file exists
+  //  if (!fs.existsSync(filePath)) {
+  //    console.error(`File does not exist: ${filePath}`);
+  //    return res.status(404).json({ message: 'File not found' });
+  //  }
+
+  // fs.unlink(filePath, (err) => {
+  //   if (err) {
+  //     console.error('Error deleting image file:', err);
+  //     return res.status(500).json({ message: 'Error deleting image file' });
+  //   }
+
+  //   res.status(200).json({ message: 'Image deleted successfully' });
+  // });
+});
+
+  module.exports = {imageUpload, imageUploadCon,multiImageUpload ,uploadByLink, getAllImages, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI, deleteMultiImage}
