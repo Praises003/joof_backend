@@ -378,6 +378,9 @@ const deleteMultiImage = asyncHandler(async (req, res) => {
     await image.save();
   }
 
+  // Send success response
+    res.status(200).json({ message: 'Image URL deleted successfully' });
+
   // Parse the URL to extract the relative file path
   // const parsedUrl = new URL(url);
   // const relativeFilePath = parsedUrl.pathname; // Extract pathname
