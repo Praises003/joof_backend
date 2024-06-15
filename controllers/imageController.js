@@ -317,7 +317,7 @@ const getMultiImageI = asyncHandler(async(req, res) => {
   })
 
   const getImagesII = asyncHandler(async(req, res) => {
-    const images = await Image.findOne().sort({ '_id': -1 });
+    const images = await ImageII.findOne().sort({ '_id': -1 });
     if(images) {
         res.status(200).json(images)
     }
