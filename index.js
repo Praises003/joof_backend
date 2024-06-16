@@ -41,6 +41,17 @@ app.use('/api/text', textRoute)
 app.use('/create-checkout-session', stripeRoute)
 app.use('/transaction', tranRoute)
 app.use('/api/upload', imageRoute)
+// Middleware to correct the protocol if it's forwarded from a proxy
+app.use((req, res, next) => {
+  if (req.headers['x-forwarded-proto'] === 'https') {
+    req.protocol = 'https';
+  }
+  next();
+});
+
+app.get('/', (req, res) => {
+  res.send(`Protocol: ${req.protocol}`);
+});
 
 const PORT = process.env.PORT || 8000
 const server = http.createServer(app)
