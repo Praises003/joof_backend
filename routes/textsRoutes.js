@@ -1,9 +1,27 @@
 const express = require("express")
 const { protect, admin } = require("../middleware/auth")
-const { getText } = require("../controllers/uploads/textsController")
+const { getText, updateVision, updateBanner, updateMission, updateWelcome, updateSec, updateProf, updateProv, updateDed, updateHighly, updateAccess, updateSuccess, updateFac, updateTextOne, updateTextTwo, updateTextThree, updateTextFour, updateTextFive, updateTextSix } = require("../controllers/uploads/textsController")
 
 const router = express.Router()
 
 router.route("/").get(getText)
+router.put("/vision", updateVision)
+router.put("/banner", updateBanner)
+router.put("/mission", updateMission)
+router.put("/welcome", updateWelcome)
+router.put("/secText", updateSec)
+router.put("/profText", updateProf)
+router.put("/prov", updateProv)
+router.put("/ded", updateDed)
+router.put("/highly", updateHighly)
+router.put("/access", updateAccess)
+router.put("/success", updateSuccess)
+router.put("/fac", updateFac)
+router.put("/textOne", updateTextOne)
+router.put("/textTwo", updateTextTwo)
+router.put("/textThree", updateTextThree)
+router.put("/textFour", updateTextFour)
+router.put("/textFive", updateTextFive)
+router.put("/textSix", updateTextSix)
 
 module.exports = router
