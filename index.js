@@ -27,8 +27,12 @@ const corsOptions = {
    exposedheaders: ["set-cookie"]
  };
 const app = express()
-app.use(cors(corsOptions))
-
+//app.use(cors(corsOptions))
+app.use(
+  cors({
+    origin: "*",
+  })
+)
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
