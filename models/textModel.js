@@ -1,18 +1,15 @@
 const mongoose = require("mongoose")
 
 const textSchema = new mongoose.Schema({
-    text: { 
-        type: String, 
-        default: "Home Text",
-        requiredt: true,
-        
-    },
+    visionText: String,
+    missionText: String,
+    bannerText: String
     
     
 }, {
     timestamps: true
 })
 
-const Text = mongoose.model("Text", textSchema)
+const Text = mongoose.model("text", textSchema)
 
 module.exports = Text

@@ -6,6 +6,9 @@ const Image = require('../models/imageModel')
 const imageDownloader = require('image-downloader');
 const ImageI = require('../models/imageIModel');
 const ImageII = require('../models/imageIIModel');
+const ImageIII = require('../models/imageIIIModel');
+const ImageIV = require('../models/imageIVModel');
+const ImageV = require('../models/imageVModel');
 
 
 const PORT = process.env.PORT || 8000
@@ -413,4 +416,122 @@ const deleteMultiImage = asyncHandler(async (req, res) => {
   // });
 });
 
-  module.exports = {imageUpload, imageUploadCon,multiImageUpload ,uploadByLink, getAllImages, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI, deleteMultiImage}
+// ImageIII Controller
+const imageUploadIII = asyncHandler(async(req, res) => {
+  if (!req.file) {
+    return res.status(400).send({ message: 'No file uploaded' });
+  }
+  const baseUrl = `${req.protocol}://${req.get('host')}`
+
+  let singleImage = {
+      url: `${baseUrl}/${req.file.path}`,
+      fileName: req.file.originalname
+    }
+
+   // Create a new image document
+  const newImage = new ImageIII ({
+      singleImage: singleImage,
+      //multipleImages: multipleImageUrls,
+      // Other model properties (if any)
+    });
+
+    // Save the image document
+     const savedImage = await newImage.save();
+  //   console.log(savedImage.singleImage)
+  
+  //const url = `http://localhost:${PORT}/${req.file.path}`
+  res.status(200).send({ message: 'File uploaded successfully',  savedImage });
+})
+
+//Get Image III
+const getImagesIII = asyncHandler(async(req, res) => {
+  const images = await ImageIII.findOne().sort({ '_id': -1 });
+  if(images) {
+      res.status(200).json(images)
+  }
+  else {
+      res.status(400)
+      throw new Error("Images cannot be found")
+  }
+})
+
+// ImageIVController
+const imageUploadIV = asyncHandler(async(req, res) => {
+  if (!req.file) {
+    return res.status(400).send({ message: 'No file uploaded' });
+  }
+  const baseUrl = `${req.protocol}://${req.get('host')}`
+
+  let singleImage = {
+      url: `${baseUrl}/${req.file.path}`,
+      fileName: req.file.originalname
+    }
+
+   // Create a new image document
+  const newImage = new ImageIV ({
+      singleImage: singleImage,
+      //multipleImages: multipleImageUrls,
+      // Other model properties (if any)
+    });
+
+    // Save the image document
+     const savedImage = await newImage.save();
+  //   console.log(savedImage.singleImage)
+  
+  //const url = `http://localhost:${PORT}/${req.file.path}`
+  res.status(200).send({ message: 'File uploaded successfully',  savedImage });
+})
+
+//Get Image III
+const getImagesIV = asyncHandler(async(req, res) => {
+  const images = await ImageIV.findOne().sort({ '_id': -1 });
+  if(images) {
+      res.status(200).json(images)
+  }
+  else {
+      res.status(400)
+      throw new Error("Images cannot be found")
+  }
+})
+
+
+// ImageV Controller
+const imageUploadV = asyncHandler(async(req, res) => {
+  if (!req.file) {
+    return res.status(400).send({ message: 'No file uploaded' });
+  }
+  const baseUrl = `${req.protocol}://${req.get('host')}`
+
+  let singleImage = {
+      url: `${baseUrl}/${req.file.path}`,
+      fileName: req.file.originalname
+    }
+
+   // Create a new image document
+  const newImage = new ImageV ({
+      singleImage: singleImage,
+      //multipleImages: multipleImageUrls,
+      // Other model properties (if any)
+    });
+
+    // Save the image document
+     const savedImage = await newImage.save();
+  //   console.log(savedImage.singleImage)
+  
+  //const url = `http://localhost:${PORT}/${req.file.path}`
+  res.status(200).send({ message: 'File uploaded successfully',  savedImage });
+})
+
+//Get Image V
+const getImagesV = asyncHandler(async(req, res) => {
+  const images = await ImageV.findOne().sort({ '_id': -1 });
+  if(images) {
+      res.status(200).json(images)
+  }
+  else {
+      res.status(400)
+      throw new Error("Images cannot be found")
+  }
+})
+
+  module.exports = {imageUpload, imageUploadCon,multiImageUpload ,uploadByLink, getAllImages, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI, deleteMultiImage, imageUploadIII, getImagesIII, imageUploadIV, getImagesIV, imageUploadV, getImagesV}

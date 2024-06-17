@@ -11,7 +11,7 @@ if (!fs.existsSync(uploadsDir)) {
 // Multer storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './uploads');
+    cb(null, './tmp');
   },
   // destination: function (req, file, cb) {
   //   // Set the destination to the tmp directory relative to the project root
