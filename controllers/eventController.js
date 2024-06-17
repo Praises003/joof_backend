@@ -60,7 +60,7 @@ const getAllEventsByUser = async (req, res) => {
             res.status(401).json({ message: 'Unauthorized - User not found' });
             return;
         }
-        const events = await Event.find({ user: req.user.userId });
+        const events = await Event.find({ user: req.user._id });
 
         res.status(200).json(events);
     } catch (error) {
