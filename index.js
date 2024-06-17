@@ -3,6 +3,7 @@ const dotenv = require("dotenv")
 dotenv.config()
 const path = require("path")
 const http = require("http")
+const fs = require('fs')
 const cors = require("cors")
 const cookieParser = require('cookie-parser')
 const stripe = require('stripe')(process.env.STRIPE_SEC_KEY)
@@ -26,8 +27,8 @@ const corsOptions = {
    exposedheaders: ["set-cookie"]
  };
 const app = express()
-//app.use(cors(corsOptions))
-app.use(cors())
+app.use(cors(corsOptions))
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
