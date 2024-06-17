@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler')
+const jwt = require("jsonwebtoken")
 
-const generateToken = require('../utils/generateToken')
+
 
 const User = require("../models/usersModel")
 
@@ -11,6 +12,7 @@ const User = require("../models/usersModel")
 //@access PUBLIC
 
 const registerUser = asyncHandler(async(req, res) => {
+    
     const {name, email, password, isAdmin} = req.body
 
     if(!name || !email || !password) {
@@ -31,14 +33,14 @@ const registerUser = asyncHandler(async(req, res) => {
 
     if (user) {
         //console.log(user)
-        let token = generateToken(res, user._id)
-        console.log(token)
+        
+
         res.status(201).json({
             _id: user._id,
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
-            token
+            token: generateToken(user._id)
             
            
         })
@@ -57,15 +59,16 @@ const registerUser = asyncHandler(async(req, res) => {
 const login = asyncHandler(async(req,res) => {
     const { email, password } = req.body
     const user = await User.findOne({ email })
+    
 
     if (user && (await user.validatePassword(password))) {
-        let token = generateToken(res, user._id)
+        
         res.status(201).json({
             _id: user._id,
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
-            token
+            token: generateToken(user._id)
         })
     } else {
         res.status(400)
@@ -111,4 +114,10 @@ const allUsers =asyncHandler(async(req, res) => {
 
     res.send(user)
 })
+
+const generateToken = ( userId) => {
+   return jwt.sign({ userId }, process.env.JWT_SECRET, {
+        expiresIn: "30d"
+    })
+}
 module.exports = {registerUser, login, logout, getAllUsers, allUsers}

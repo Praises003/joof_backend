@@ -22,7 +22,7 @@ const tranRoute = require("./routes/tranRoute")
 
 connectDb()
 const corsOptions = {
-   origin: ['http://localhost:3000', 'https://joof.onrender.com'],
+   origin: ['http://localhost:3000', 'https://joof.onrender.com', 'https://joof.onrender.com'],
    credentials: true,
    exposedheaders: ["set-cookie"]
  };

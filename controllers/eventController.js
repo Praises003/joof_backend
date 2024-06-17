@@ -53,6 +53,21 @@ const getSingleEvent = asyncHandler(async(req, res) => {
     
 })
 
+const getAllEventsByUser = async (req, res) => {
+    try {
+        // Find all events where the user field matches the logged in user's id
+        if (!req.user) {
+            res.status(401).json({ message: 'Unauthorized - User not found' });
+            return;
+        }
+        const events = await Event.find({ user: req.user.userId });
+
+        res.status(200).json(events);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 const renameEvent = asyncHandler(async(req, res) => {
     const { eventId, title, description, type, date } = req.body
 
@@ -72,4 +87,4 @@ const renameEvent = asyncHandler(async(req, res) => {
     }
 })
 
-module.exports = {createEvent, getAll, renameEvent}
+module.exports = {createEvent, getAll, renameEvent, getAllEventsByUser}

@@ -11,8 +11,8 @@ const generateToken = (res, userId) => {
 
     res.cookie('auth', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development', 
-        sameSite: process.env.NODE_ENV !== "development" ? "none": 'strict',
+        secure: true, 
+        sameSite: strict,
         maxAge: 30 * 24 * 60 * 60 * 1000,
         path: "/", 
         //domain: process.env.NODE_ENV !== "development" ? "joof-backend.vercel.app" : ".localhost"
