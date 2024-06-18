@@ -24,16 +24,12 @@ const tableRoute = require("./routes/tableRoute")
 
 connectDb()
 const corsOptions = {
-   origin: ['http://localhost:3000', 'https://joof.onrender.com', 'https://joof.onrender.com'],
+   origin: ['http://localhost:3000', 'https://joof.onrender.com'],
    credentials: true,
    exposedheaders: ["set-cookie"]
  };
 
- const allowedOrigins = [
-  'https://joof-frontend.vercel.app',
-  'https://joof.onrender.com',
-  'http://localhost:3000', // Add any other allowed origins here
-];
+ 
 
 // const corsOptions = {
 //   origin: function(origin, callback) {
