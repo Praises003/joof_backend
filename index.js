@@ -19,13 +19,15 @@ const imageRoute = require("./routes/imageRoute")
 
 const tranRoute = require("./routes/tranRoute")
 
+const tableRoute = require("./routes/tableRoute")
+
 
 connectDb()
-// const corsOptions = {
-//    origin: ['http://localhost:3000', 'https://joof.onrender.com', 'https://joof.onrender.com'],
-//    credentials: true,
-//    exposedheaders: ["set-cookie"]
-//  };
+const corsOptions = {
+   origin: ['http://localhost:3000', 'https://joof.onrender.com', 'https://joof.onrender.com'],
+   credentials: true,
+   exposedheaders: ["set-cookie"]
+ };
 
  const allowedOrigins = [
   'https://joof-frontend.vercel.app',
@@ -33,16 +35,16 @@ connectDb()
   'http://localhost:3000', // Add any other allowed origins here
 ];
 
-const corsOptions = {
-  origin: function(origin, callback) {
-      if (allowedOrigins.indexOf(origin) !== -1) {
-          callback(null, true);
-      } else {
-          callback(new Error('Not allowed by CORS'));
-      }
-  },
-  credentials: true // Allow cookies and authorization headers
-};
+// const corsOptions = {
+//   origin: function(origin, callback) {
+//       if (allowedOrigins.indexOf(origin) !== -1) {
+//           callback(null, true);
+//       } else {
+//           callback(new Error('Not allowed by CORS'));
+//       }
+//   },
+//   credentials: true // Allow cookies and authorization headers
+// };
 const app = express()
 app.use(cors(corsOptions))
 
@@ -62,6 +64,7 @@ app.use('/api/texts', textsRoute)
 app.use('/create-checkout-session', stripeRoute)
 app.use('/transaction', tranRoute)
 app.use('/api/upload', imageRoute)
+app.use('/api/table', tableRoute)
 // Middleware to correct the protocol if it's forwarded from a proxy
 app.use((req, res, next) => {
   if (req.headers['x-forwarded-proto'] === 'https') {
@@ -70,9 +73,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', (req, res) => {
-  res.send(`Protocol: ${req.protocol}`);
-});
 
 const PORT = process.env.PORT || 8000
 const server = http.createServer(app)

@@ -58,4 +58,4 @@ const addTable = asyncHandler(async(req, res) => {
 
 })
 
-module.exports= {getAllTable}
+module.exports= { getAllTable, reserveSeat, addTable }
