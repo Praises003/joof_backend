@@ -1,6 +1,6 @@
 const express = require("express")
 const { protect, admin } = require("../middleware/auth")
-const { getText, updateVision, updateBanner, updateMission, updateWelcome, updateSec, updateProf, updateProv, updateDed, updateHighly, updateAccess, updateSuccess, updateFac, updateTextOne, updateTextTwo, updateTextThree, updateTextFour, updateTextFive, updateTextSix } = require("../controllers/uploads/textsController")
+const { getText, updateVision, updateBanner, updateMission, updateWelcome, updateSec, updateProf, updateProv, updateDed, updateHighly, updateAccess, updateSuccess, updateFac, updateTextOne, updateTextTwo, updateTextThree, updateTextFour, updateTextFive, updateTextSix } = require('../controllers/textsContoller')
 
 const router = express.Router()
 

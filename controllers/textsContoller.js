@@ -1,5 +1,6 @@
+
 const asyncHandler = require('express-async-handler')
-const Text = require("../../models/textModel")
+const Text = require("../models/textModel")
 const getText = asyncHandler(async (req, res) => {
     try {
         const textData = await Text.findOne();
@@ -12,11 +13,11 @@ const getText = asyncHandler(async (req, res) => {
 })
 
 //Update Vision Text
+
 const updateVision = asyncHandler(async (req, res) => {
     try {
         const { text } = req.body;
         const updatedText = await Text.findOneAndUpdate({}, { visionText: text}, {new: true, upsert: true} );
-
         res.json(updatedText)
     } catch (error) {
         res.status(500)
@@ -24,6 +25,7 @@ const updateVision = asyncHandler(async (req, res) => {
     }
 })
 
+// Update 
 // Update bannerText
 const updateBanner = asyncHandler(async (req, res) => {
     try {
@@ -238,5 +240,6 @@ const updateTextSix = asyncHandler(async (req, res) => {
         throw new Error({ message: error.message });
     }
 })
+
 
 module.exports = {getText, updateVision, updateBanner, updateMission, updateWelcome, updateSec, updateProf, updateProv, updateDed, updateHighly, updateAccess, updateSuccess, updateFac, updateTextOne, updateTextTwo, updateTextThree, updateTextFour, updateTextFive, updateTextSix}

@@ -21,18 +21,31 @@ const tranRoute = require("./routes/tranRoute")
 
 
 connectDb()
+// const corsOptions = {
+//    origin: ['http://localhost:3000', 'https://joof.onrender.com', 'https://joof.onrender.com'],
+//    credentials: true,
+//    exposedheaders: ["set-cookie"]
+//  };
+
+ const allowedOrigins = [
+  'https://joof-frontend.vercel.app',
+  'https://joof.onrender.com',
+  'http://localhost:3000', // Add any other allowed origins here
+];
+
 const corsOptions = {
-   origin: ['http://localhost:3000', 'https://joof.onrender.com', 'https://joof.onrender.com'],
-   credentials: true,
-   exposedheaders: ["set-cookie"]
- };
+  origin: function(origin, callback) {
+      if (allowedOrigins.indexOf(origin) !== -1) {
+          callback(null, true);
+      } else {
+          callback(new Error('Not allowed by CORS'));
+      }
+  },
+  credentials: true // Allow cookies and authorization headers
+};
 const app = express()
-//app.use(cors(corsOptions))
-app.use(
-  cors({
-    origin: "*",
-  })
-)
+app.use(cors(corsOptions))
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
