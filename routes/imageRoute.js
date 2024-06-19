@@ -2,7 +2,7 @@ const express = require("express")
 const { protect, admin } = require("../middleware/auth")
 const upload = require('../middleware/image');
 const multiUpload = require('../middleware/multiImage')
-const { uploadByLink, imageUpload, multiImageUpload, getAllImages, imageUploadCon, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI, deleteMultiImage, imageUploadIII, getImagesIII, imageUploadIV, imageUploadV, getImagesV, getImagesIV } = require("../controllers/imageController");
+const { uploadByLink, imageUpload, multiImageUpload, getAllImages, imageUploadCon, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI, deleteMultiImage, imageUploadIII, getImagesIII, imageUploadIV, imageUploadV, getImagesV, getImagesIV, deleteImage } = require("../controllers/imageController");
 const router = express.Router()
 
 router.route('/').get(getAllImages)
@@ -24,6 +24,7 @@ router.get("/imageIV", getImagesIV )
 router.post("/imageV",  imageUploadV)
 router.get("/imageV", getImagesV)
 router.delete("/multi", deleteMultiImage)
+router.delete("/del", deleteImage)
 
 
 module.exports = router

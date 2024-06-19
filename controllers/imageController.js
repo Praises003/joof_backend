@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler')
 const path = require('path')
 const { URL } = require('url');
 const fs = require('fs')
-const { uploadImageToCloudinary } = require(".././utils/cloudinaryUtils")
+const { uploadImageToCloudinary, deleteImageFromCloudinary } = require(".././utils/cloudinaryUtils")
 const Image = require('../models/imageModel')
 const imageDownloader = require('image-downloader');
 const ImageI = require('../models/imageIModel');
@@ -609,6 +609,48 @@ const deleteMultiImage = asyncHandler(async (req, res) => {
   // });
 });
 
+const deleteImage = async (req, res) => {
+  const { public_id } = req.body; // Retrieve imageUrl from req.body
+
+  try {
+    // Find the image in the database by its URL
+    const image = await Image.findOne({ 'multipleImages.filename': public_id});
+    
+
+
+    if (!image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+    const matchingImage = image.multipleImages.find(img => img.filename === public_id);
+
+    if (!matchingImage) {
+      return res.status(404).json({ message: 'Matching image not found' });
+    }
+
+    
+
+    // Delete the image from Cloudinary
+    const cloudinaryResult = await deleteImageFromCloudinary(matchingImage.filename);
+ 
+
+    // Handle Cloudinary delete response
+    if (cloudinaryResult.result === 'ok') {
+      // If deleted successfully from Cloudinary, delete from database
+      image.multipleImages.pull({ filename: public_id });
+      await image.save(); // Save the updated image document in the database
+      return res.status(200).json({ message: 'Image deleted successfully' });
+    } else {
+      return res.status(500).json({ message: 'Failed to delete image from Cloudinary' });
+      
+    }
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    res.status(500).json({ message: 'Failed to delete image' });
+  }
+};
+
+
 // ImageIII Controller
 // const imageUploadIII = asyncHandler(async(req, res) => {
 //   if (!req.file) {
@@ -882,4 +924,4 @@ const removeTmp = (path) => {
   });
 };
 
-  module.exports = {imageUpload, imageUploadCon,multiImageUpload ,uploadByLink, getAllImages, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI, deleteMultiImage, imageUploadIII, getImagesIII, imageUploadIV, getImagesIV, imageUploadV, getImagesV}
+  module.exports = {imageUpload, imageUploadCon,multiImageUpload ,uploadByLink, getAllImages, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI, deleteMultiImage, imageUploadIII, getImagesIII, imageUploadIV, getImagesIV, imageUploadV, getImagesV, deleteImage}
