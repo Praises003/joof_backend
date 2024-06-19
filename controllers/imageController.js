@@ -224,7 +224,7 @@ const imageUpload = async (req, res) => {
         // Map uploadResults to match your Mongoose schema
         const images = uploadResults.map(result => ({
           url: result.url,
-          fileName: result.public_id
+          filename: result.public_id
         }));
     
         // Example: Saving to database using Mongoose
