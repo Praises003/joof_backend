@@ -214,6 +214,7 @@ const imageUpload = async (req, res) => {
     
           // Upload file to Cloudinary
           const cloudinaryResult = await uploadImageToCloudinary(file);
+          //console.log(cloudinaryResult)
           uploadResults.push(cloudinaryResult);
     
           // Remove temporary file
@@ -222,8 +223,8 @@ const imageUpload = async (req, res) => {
     
         // Map uploadResults to match your Mongoose schema
         const images = uploadResults.map(result => ({
-          url: result.secure_url,
-          fileName: result.original_filename
+          url: result.url,
+          fileName: result.public_id
         }));
     
         // Example: Saving to database using Mongoose
@@ -232,7 +233,8 @@ const imageUpload = async (req, res) => {
         });
     
         // Save the image document
-        const savedImage = await newImage.save();
+         const savedImage = await newImage.save();
+        console.log(uploadResults)
     
         res.status(200).json({ message: 'Files uploaded successfully', savedImage });
       } catch (error) {
