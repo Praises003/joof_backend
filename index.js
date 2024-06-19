@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser')
 const stripe = require('stripe')(process.env.STRIPE_SEC_KEY)
 const connectDb = require("./config/db")
 const {notFound, errorHandler} = require('./middleware/error')
+const fileUpload = require("express-fileupload")
 const userRoute = require("./routes/userRoute")
 const eventRoute = require("./routes/eventRoute")
 const guestRoute = require("./routes/guestRoute")
@@ -48,6 +49,12 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/tmp', express.static(path.join(process.cwd(), 'tmp')));
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: "/tmp",
+
+}))
+
 
 
 // }))

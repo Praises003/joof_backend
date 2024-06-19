@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler')
 const path = require('path')
 const { URL } = require('url');
 const fs = require('fs')
+const { uploadImageToCloudinary } = require(".././utils/cloudinaryUtils")
 const Image = require('../models/imageModel')
 const imageDownloader = require('image-downloader');
 const ImageI = require('../models/imageIModel');
@@ -12,31 +13,81 @@ const ImageV = require('../models/imageVModel');
 
 
 const PORT = process.env.PORT || 8000
-const imageUpload = asyncHandler(async(req, res) => {
-    if (!req.file) {
-      return res.status(400).send({ message: 'No file uploaded' });
+// const imageUpload = asyncHandler(async(req, res) => {
+//     if (!req.file) {
+//       return res.status(400).send({ message: 'No file uploaded' });
+//     }
+//     const baseUrl = `${req.protocol}://${req.get('host')}`
+
+//     let singleImage = {
+//         url: `${baseUrl}/${req.file.path}`,
+//         fileName: req.file.originalname
+//       }
+
+//      // Create a new image document
+//     const newImage = new Image({
+//         singleImage: singleImage,
+//         //multipleImages: multipleImageUrls,
+//         // Other model properties (if any)
+//       });
+  
+//       // Save the image document
+//        const savedImage = await newImage.save();
+//     //   console.log(savedImage.singleImage)
+    
+//     //const url = `http://localhost:${PORT}/${req.file.path}`
+//     res.status(200).send({ message: 'File uploaded successfully',  savedImage });
+//   })
+
+const imageUpload = async (req, res) => {
+  try {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).json({ msg: "No files were uploaded" });
     }
-    const baseUrl = `${req.protocol}://${req.get('host')}`
+
+    const file = req.files.file;
+    console.log(file)
+
+    if (file.size > 1024 * 1024) {
+      removeTmp(file.tempFilePath);
+      return res.status(400).json({ msg: "Size too large" });
+    }
+
+    if (
+      file.mimetype !== "image/jpeg" &&
+      file.mimetype !== "image/png"
+    ) {
+      removeTmp(file.tempFilePath);
+      return res.status(400).json({ msg: "File format is not supported" });
+    }
+
+    // Upload image to Cloudinary using utility function
+    const cloudinaryResult = await uploadImageToCloudinary(file);
+
+    
 
     let singleImage = {
-        url: `${baseUrl}/${req.file.path}`,
-        fileName: req.file.originalname
-      }
+      url: cloudinaryResult.url,
+      fileName: file.name
+    }
 
-     // Create a new image document
-    const newImage = new Image({
-        singleImage: singleImage,
-        //multipleImages: multipleImageUrls,
-        // Other model properties (if any)
-      });
-  
-      // Save the image document
-       const savedImage = await newImage.save();
-    //   console.log(savedImage.singleImage)
     
-    //const url = `http://localhost:${PORT}/${req.file.path}`
-    res.status(200).send({ message: 'File uploaded successfully',  savedImage });
-  })
+    // Create a new image document with Cloudinary URL
+    const newImage = new Image({
+      singleImage: singleImage
+      // Other model properties as needed
+    });
+
+    // Save the image document to your database
+    const savedImage = await newImage.save();
+
+    // Respond with success message and saved image data
+    res.status(200).json(savedImage);
+  } catch (error) {
+    console.error("Error in imageUploadI controller:", error);
+    res.status(500).json({ error: "Failed to upload the file" });
+  }
+};
 
   const imageUploadCon = asyncHandler(async(req, res) => {
     if (!req.file) {
@@ -78,53 +129,118 @@ const imageUpload = asyncHandler(async(req, res) => {
 //  res.json({ fileUrl });
 // });
 
-const multiImageUpload = asyncHandler(async(req, res) => {
-    //console.log(req.files)
-    if(!req.files  || req.files.length === 0) {
-        //console.log(req.files)
-        return res.status(400).send({ message: 'No file uploaded' }); 
-    }
+// const multiImageUpload = asyncHandler(async(req, res) => {
+//     //console.log(req.files)
+//     if(!req.files  || req.files.length === 0) {
+//         //console.log(req.files)
+//         return res.status(400).send({ message: 'No file uploaded' }); 
+//     }
 
-    const baseUrl = `${req.protocol}://${req.get('host')}`
+//     const baseUrl = `${req.protocol}://${req.get('host')}`
 
 
-    // Map through the files to extract their paths
-    let multipleImg;
-    const images = req.files.map(file => (
-        multipleImg = {
-            url: `${baseUrl}/${file.path}`,
-            fieldName: file.originalname
-        }
-    ));
-
-    
+//     // Map through the files to extract their paths
+//     let multipleImg;
+//     const images = req.files.map(file => (
+//         multipleImg = {
+//             url: `${baseUrl}/${file.path}`,
+//             fieldName: file.originalname
+//         }
+//     ));
 
     
 
-    // Create a new image document
-    const newImage = new Image({
-        multipleImages: images,
-      });
+    
+
+//     // Create a new image document
+//     const newImage = new Image({
+//         multipleImages: images,
+//       });
   
-      // Save the image document
-      const savedImage = await newImage.save();
+//       // Save the image document
+//       const savedImage = await newImage.save();
     
-    // Send a single response with all file paths
-    res.status(200).send({ message: 'Files uploaded successfully', filePaths: savedImage});
+//     // Send a single response with all file paths
+//     res.status(200).send({ message: 'Files uploaded successfully', filePaths: savedImage});
 
-    // const images = req.files.map(file =>{ (console.log(file))
-    // return res.send([file.path])
-    // res.status(200).send({ message: 'File uploaded successfully', filePath: [file]});
-//})
-    //res.send(images)
+//     // const images = req.files.map(file =>{ (console.log(file))
+//     // return res.send([file.path])
+//     // res.status(200).send({ message: 'File uploaded successfully', filePath: [file]});
+// //})
+//     //res.send(images)
 
-    // for (let i = 0; i < req.files.length; i++) {
-    //     if(req.files[i].mimetype !== "image/jpeg") {
+//     // for (let i = 0; i < req.files.length; i++) {
+//     //     if(req.files[i].mimetype !== "image/jpeg") {
 
-    //     }
-    // }
+//     //     }
+//     // }
     
-})
+// })
+
+//multipleImages: uploadResults.map(result => ({
+    //     url: result.secure_url,
+    //     fileName: result.original_filename
+    //   })
+
+    const multiImageUpload = async (req, res) => {
+      try {
+        if (!req.files || Object.keys(req.files).length === 0) {
+          return res.status(400).json({ msg: "No files were uploaded" });
+        }
+    
+        const files = req.files.file; // Assuming files is the array of files
+        
+        // Array to store Cloudinary upload results
+        const uploadResults = [];
+    
+        // Iterate through each file and upload to Cloudinary
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+    
+          if (file.size > 1024 * 1024) {
+            // Optionally handle file size validation
+            removeTmp(file.tempFilePath);
+            return res.status(400).json({ msg: `File ${file.name} size too large` });
+          }
+    
+          if (
+            file.mimetype !== "image/jpeg" &&
+            file.mimetype !== "image/png"
+          ) {
+            // Optionally handle file type validation
+            removeTmp(file.tempFilePath);
+            return res.status(400).json({ msg: `File ${file.name} format is not supported` });
+          }
+    
+          // Upload file to Cloudinary
+          const cloudinaryResult = await uploadImageToCloudinary(file);
+          uploadResults.push(cloudinaryResult);
+    
+          // Remove temporary file
+          removeTmp(file.tempFilePath);
+        }
+    
+        // Map uploadResults to match your Mongoose schema
+        const images = uploadResults.map(result => ({
+          url: result.secure_url,
+          fileName: result.original_filename
+        }));
+    
+        // Example: Saving to database using Mongoose
+        const newImage = new Image({
+          multipleImages: images,
+        });
+    
+        // Save the image document
+        const savedImage = await newImage.save();
+    
+        res.status(200).json({ message: 'Files uploaded successfully', savedImage });
+      } catch (error) {
+        console.error("Error in imageUploadI controller:", error);
+        res.status(500).json({ error: "Failed to upload the files" });
+      }
+    };
+    
 
 const uploadByLink = async(req, res) => {
     const {link} = req.body;
@@ -184,32 +300,57 @@ const getMultiImage = asyncHandler(async(req, res) => {
 });
 
 
-// ImageI Controller
-const imageUploadI = asyncHandler(async(req, res) => {
-    if (!req.file) {
-      return res.status(400).send({ message: 'No file uploaded' });
+
+
+const imageUploadI = async (req, res) => {
+  try {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).json({ msg: "No files were uploaded" });
     }
-    const baseUrl = `${req.protocol}://${req.get('host')}`
+
+    const file = req.files.file;
+    console.log(file)
+
+    if (file.size > 1024 * 1024) {
+      removeTmp(file.tempFilePath);
+      return res.status(400).json({ msg: "Size too large" });
+    }
+
+    if (
+      file.mimetype !== "image/jpeg" &&
+      file.mimetype !== "image/png"
+    ) {
+      removeTmp(file.tempFilePath);
+      return res.status(400).json({ msg: "File format is not supported" });
+    }
+
+    // Upload image to Cloudinary using utility function
+    const cloudinaryResult = await uploadImageToCloudinary(file);
+
+    console.log(cloudinaryResult)
 
     let singleImage = {
-        url: `${baseUrl}/${req.file.path}`,
-        fileName: req.file.originalname
-      }
+      url: cloudinaryResult.url,
+      fileName: file.name
+    }
 
-     // Create a new image document
-    const newImage = new ImageI({
-        singleImage: singleImage,
-        //multipleImages: multipleImageUrls,
-        // Other model properties (if any)
-      });
-  
-      // Save the image document
-       const savedImage = await newImage.save();
-    //   console.log(savedImage.singleImage)
     
-    //const url = `http://localhost:${PORT}/${req.file.path}`
-    res.status(200).send({ message: 'File uploaded successfully',  savedImage });
-  })
+    // Create a new image document with Cloudinary URL
+    const newImage = new ImageI({
+      singleImage: singleImage
+      // Other model properties as needed
+    });
+
+    // Save the image document to your database
+    const savedImage = await newImage.save();
+
+    // Respond with success message and saved image data
+    res.status(200).json(savedImage);
+  } catch (error) {
+    console.error("Error in imageUploadI controller:", error);
+    res.status(500).json({ error: "Failed to upload the file" });
+  }
+};
 
   // ImageI multiupload
   const multiImageUploadI = asyncHandler(async(req, res) => {
@@ -293,31 +434,81 @@ const getMultiImageI = asyncHandler(async(req, res) => {
 
 
   // ImageII Controller
-  const imageUploadII = asyncHandler(async(req, res) => {
-    if (!req.file) {
-      return res.status(400).send({ message: 'No file uploaded' });
-    }
-    const baseUrl = `${req.protocol}://${req.get('host')}`
+  // const imageUploadII = asyncHandler(async(req, res) => {
+  //   if (!req.file) {
+  //     return res.status(400).send({ message: 'No file uploaded' });
+  //   }
+  //   const baseUrl = `${req.protocol}://${req.get('host')}`
 
-    let singleImage = {
-        url: `${baseUrl}/${req.file.path}`,
-        fileName: req.file.originalname
+  //   let singleImage = {
+  //       url: `${baseUrl}/${req.file.path}`,
+  //       fileName: req.file.originalname
+  //     }
+
+  //    // Create a new image document
+  //   const newImage = new ImageII({
+  //       singleImage: singleImage,
+  //       //multipleImages: multipleImageUrls,
+  //       // Other model properties (if any)
+  //     });
+  
+  //     // Save the image document
+  //      const savedImage = await newImage.save();
+  //   //   console.log(savedImage.singleImage)
+    
+  //   //const url = `http://localhost:${PORT}/${req.file.path}`
+  //   res.status(200).send({ message: 'File uploaded successfully',  savedImage });
+  // })
+
+  const imageUploadII = async (req, res) => {
+    try {
+      if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).json({ msg: "No files were uploaded" });
       }
-
-     // Create a new image document
-    const newImage = new ImageII({
-        singleImage: singleImage,
-        //multipleImages: multipleImageUrls,
-        // Other model properties (if any)
+  
+      const file = req.files.file;
+      console.log(file)
+  
+      if (file.size > 1024 * 1024) {
+        removeTmp(file.tempFilePath);
+        return res.status(400).json({ msg: "Size too large" });
+      }
+  
+      if (
+        file.mimetype !== "image/jpeg" &&
+        file.mimetype !== "image/png"
+      ) {
+        removeTmp(file.tempFilePath);
+        return res.status(400).json({ msg: "File format is not supported" });
+      }
+  
+      // Upload image to Cloudinary using utility function
+      const cloudinaryResult = await uploadImageToCloudinary(file);
+  
+      console.log(cloudinaryResult)
+  
+      let singleImage = {
+        url: cloudinaryResult.url,
+        fileName: file.name
+      }
+  
+      
+      // Create a new image document with Cloudinary URL
+      const newImage = new ImageII({
+        singleImage: singleImage
+        // Other model properties as needed
       });
   
-      // Save the image document
-       const savedImage = await newImage.save();
-    //   console.log(savedImage.singleImage)
-    
-    //const url = `http://localhost:${PORT}/${req.file.path}`
-    res.status(200).send({ message: 'File uploaded successfully',  savedImage });
-  })
+      // Save the image document to your database
+      const savedImage = await newImage.save();
+  
+      // Respond with success message and saved image data
+      res.status(200).json(savedImage);
+    } catch (error) {
+      console.error("Error in imageUploadI controller:", error);
+      res.status(500).json({ error: "Failed to upload the file" });
+    }
+  };
 
   const getImagesII = asyncHandler(async(req, res) => {
     const images = await ImageII.findOne().sort({ '_id': -1 });
@@ -417,32 +608,81 @@ const deleteMultiImage = asyncHandler(async (req, res) => {
 });
 
 // ImageIII Controller
-const imageUploadIII = asyncHandler(async(req, res) => {
-  if (!req.file) {
-    return res.status(400).send({ message: 'No file uploaded' });
-  }
-  const baseUrl = `${req.protocol}://${req.get('host')}`
+// const imageUploadIII = asyncHandler(async(req, res) => {
+//   if (!req.file) {
+//     return res.status(400).send({ message: 'No file uploaded' });
+//   }
+//   const baseUrl = `${req.protocol}://${req.get('host')}`
 
-  let singleImage = {
-      url: `${baseUrl}/${req.file.path}`,
-      fileName: req.file.originalname
+//   let singleImage = {
+//       url: `${baseUrl}/${req.file.path}`,
+//       fileName: req.file.originalname
+//     }
+
+//    // Create a new image document
+//   const newImage = new ImageIII ({
+//       singleImage: singleImage,
+//       //multipleImages: multipleImageUrls,
+//       // Other model properties (if any)
+//     });
+
+//     // Save the image document
+//      const savedImage = await newImage.save();
+//   //   console.log(savedImage.singleImage)
+  
+//   //const url = `http://localhost:${PORT}/${req.file.path}`
+//   res.status(200).send({ message: 'File uploaded successfully',  savedImage });
+// })
+
+const imageUploadIII = async (req, res) => {
+  try {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).json({ msg: "No files were uploaded" });
     }
 
-   // Create a new image document
-  const newImage = new ImageIII ({
-      singleImage: singleImage,
-      //multipleImages: multipleImageUrls,
-      // Other model properties (if any)
+    const file = req.files.file;
+    console.log(file)
+
+    if (file.size > 1024 * 1024) {
+      removeTmp(file.tempFilePath);
+      return res.status(400).json({ msg: "Size too large" });
+    }
+
+    if (
+      file.mimetype !== "image/jpeg" &&
+      file.mimetype !== "image/png"
+    ) {
+      removeTmp(file.tempFilePath);
+      return res.status(400).json({ msg: "File format is not supported" });
+    }
+
+    // Upload image to Cloudinary using utility function
+    const cloudinaryResult = await uploadImageToCloudinary(file);
+
+    console.log(cloudinaryResult)
+
+    let singleImage = {
+      url: cloudinaryResult.url,
+      fileName: file.name
+    }
+
+    
+    // Create a new image document with Cloudinary URL
+    const newImage = new ImageIII({
+      singleImage: singleImage
+      // Other model properties as needed
     });
 
-    // Save the image document
-     const savedImage = await newImage.save();
-  //   console.log(savedImage.singleImage)
-  
-  //const url = `http://localhost:${PORT}/${req.file.path}`
-  res.status(200).send({ message: 'File uploaded successfully',  savedImage });
-})
+    // Save the image document to your database
+    const savedImage = await newImage.save();
 
+    // Respond with success message and saved image data
+    res.status(200).json(savedImage);
+  } catch (error) {
+    console.error("Error in imageUploadI controller:", error);
+    res.status(500).json({ error: "Failed to upload the file" });
+  }
+};
 //Get Image III
 const getImagesIII = asyncHandler(async(req, res) => {
   const images = await ImageIII.findOne().sort({ '_id': -1 });
@@ -456,31 +696,81 @@ const getImagesIII = asyncHandler(async(req, res) => {
 })
 
 // ImageIVController
-const imageUploadIV = asyncHandler(async(req, res) => {
-  if (!req.file) {
-    return res.status(400).send({ message: 'No file uploaded' });
-  }
-  const baseUrl = `${req.protocol}://${req.get('host')}`
+// const imageUploadIV = asyncHandler(async(req, res) => {
+//   if (!req.file) {
+//     return res.status(400).send({ message: 'No file uploaded' });
+//   }
+//   const baseUrl = `${req.protocol}://${req.get('host')}`
 
-  let singleImage = {
-      url: `${baseUrl}/${req.file.path}`,
-      fileName: req.file.originalname
+//   let singleImage = {
+//       url: `${baseUrl}/${req.file.path}`,
+//       fileName: req.file.originalname
+//     }
+
+//    // Create a new image document
+//   const newImage = new ImageIV ({
+//       singleImage: singleImage,
+//       //multipleImages: multipleImageUrls,
+//       // Other model properties (if any)
+//     });
+
+//     // Save the image document
+//      const savedImage = await newImage.save();
+//   //   console.log(savedImage.singleImage)
+  
+//   //const url = `http://localhost:${PORT}/${req.file.path}`
+//   res.status(200).send({ message: 'File uploaded successfully',  savedImage });
+// })
+
+const imageUploadIV = async (req, res) => {
+  try {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).json({ msg: "No files were uploaded" });
     }
 
-   // Create a new image document
-  const newImage = new ImageIV ({
-      singleImage: singleImage,
-      //multipleImages: multipleImageUrls,
-      // Other model properties (if any)
+    const file = req.files.file;
+    console.log(file)
+
+    if (file.size > 1024 * 1024) {
+      removeTmp(file.tempFilePath);
+      return res.status(400).json({ msg: "Size too large" });
+    }
+
+    if (
+      file.mimetype !== "image/jpeg" &&
+      file.mimetype !== "image/png"
+    ) {
+      removeTmp(file.tempFilePath);
+      return res.status(400).json({ msg: "File format is not supported" });
+    }
+
+    // Upload image to Cloudinary using utility function
+    const cloudinaryResult = await uploadImageToCloudinary(file);
+
+    console.log(cloudinaryResult)
+
+    let singleImage = {
+      url: cloudinaryResult.url,
+      fileName: file.name
+    }
+
+    
+    // Create a new image document with Cloudinary URL
+    const newImage = new ImageIV({
+      singleImage: singleImage
+      // Other model properties as needed
     });
 
-    // Save the image document
-     const savedImage = await newImage.save();
-  //   console.log(savedImage.singleImage)
-  
-  //const url = `http://localhost:${PORT}/${req.file.path}`
-  res.status(200).send({ message: 'File uploaded successfully',  savedImage });
-})
+    // Save the image document to your database
+    const savedImage = await newImage.save();
+
+    // Respond with success message and saved image data
+    res.status(200).json(savedImage);
+  } catch (error) {
+    console.error("Error in imageUploadI controller:", error);
+    res.status(500).json({ error: "Failed to upload the file" });
+  }
+};
 
 //Get Image III
 const getImagesIV = asyncHandler(async(req, res) => {
@@ -496,31 +786,81 @@ const getImagesIV = asyncHandler(async(req, res) => {
 
 
 // ImageV Controller
-const imageUploadV = asyncHandler(async(req, res) => {
-  if (!req.file) {
-    return res.status(400).send({ message: 'No file uploaded' });
-  }
-  const baseUrl = `${req.protocol}://${req.get('host')}`
+// const imageUploadV = asyncHandler(async(req, res) => {
+//   if (!req.file) {
+//     return res.status(400).send({ message: 'No file uploaded' });
+//   }
+//   const baseUrl = `${req.protocol}://${req.get('host')}`
 
-  let singleImage = {
-      url: `${baseUrl}/${req.file.path}`,
-      fileName: req.file.originalname
+//   let singleImage = {
+//       url: `${baseUrl}/${req.file.path}`,
+//       fileName: req.file.originalname
+//     }
+
+//    // Create a new image document
+//   const newImage = new ImageV ({
+//       singleImage: singleImage,
+//       //multipleImages: multipleImageUrls,
+//       // Other model properties (if any)
+//     });
+
+//     // Save the image document
+//      const savedImage = await newImage.save();
+//   //   console.log(savedImage.singleImage)
+  
+//   //const url = `http://localhost:${PORT}/${req.file.path}`
+//   res.status(200).send({ message: 'File uploaded successfully',  savedImage });
+// })
+
+const imageUploadV = async (req, res) => {
+  try {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).json({ msg: "No files were uploaded" });
     }
 
-   // Create a new image document
-  const newImage = new ImageV ({
-      singleImage: singleImage,
-      //multipleImages: multipleImageUrls,
-      // Other model properties (if any)
+    const file = req.files.file;
+    console.log(file)
+
+    if (file.size > 1024 * 1024) {
+      removeTmp(file.tempFilePath);
+      return res.status(400).json({ msg: "Size too large" });
+    }
+
+    if (
+      file.mimetype !== "image/jpeg" &&
+      file.mimetype !== "image/png"
+    ) {
+      removeTmp(file.tempFilePath);
+      return res.status(400).json({ msg: "File format is not supported" });
+    }
+
+    // Upload image to Cloudinary using utility function
+    const cloudinaryResult = await uploadImageToCloudinary(file);
+
+    console.log(cloudinaryResult)
+
+    let singleImage = {
+      url: cloudinaryResult.url,
+      fileName: file.name
+    }
+
+    
+    // Create a new image document with Cloudinary URL
+    const newImage = new ImageV({
+      singleImage: singleImage
+      // Other model properties as needed
     });
 
-    // Save the image document
-     const savedImage = await newImage.save();
-  //   console.log(savedImage.singleImage)
-  
-  //const url = `http://localhost:${PORT}/${req.file.path}`
-  res.status(200).send({ message: 'File uploaded successfully',  savedImage });
-})
+    // Save the image document to your database
+    const savedImage = await newImage.save();
+
+    // Respond with success message and saved image data
+    res.status(200).json(savedImage);
+  } catch (error) {
+    console.error("Error in imageUploadI controller:", error);
+    res.status(500).json({ error: "Failed to upload the file" });
+  }
+};
 
 //Get Image V
 const getImagesV = asyncHandler(async(req, res) => {
@@ -533,5 +873,11 @@ const getImagesV = asyncHandler(async(req, res) => {
       throw new Error("Images cannot be found")
   }
 })
+
+const removeTmp = (path) => {
+  fs.unlink(path, (err) => {
+    if (err) throw err;
+  });
+};
 
   module.exports = {imageUpload, imageUploadCon,multiImageUpload ,uploadByLink, getAllImages, imageUploadI, imageUploadII, multiImageUploadI, getImagesI, getImagesII, getMultiImage, getMultiImageI, deleteMultiImage, imageUploadIII, getImagesIII, imageUploadIV, getImagesIV, imageUploadV, getImagesV}
