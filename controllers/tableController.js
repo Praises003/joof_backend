@@ -25,13 +25,13 @@ const reserveSeat = asyncHandler(async(req, res) => {
 
 
 
-    const events = Event.find({ user: req.user._id })
+    // const events = Event.find({ user: req.user._id })
 
-    if(!events) {
-        res.status(400)
+    // if(!events) {
+    //     res.status(400)
 
-        throw new Error("Book An Event before reserving a seat")
-    }
+    //     throw new Error("Book An Event before reserving a seat")
+    // }
 
 
     if (table) {
