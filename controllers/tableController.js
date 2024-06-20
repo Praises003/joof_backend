@@ -13,8 +13,7 @@ const getAllTable = asyncHandler(async(req, res) => {
         throw new Error(error)
     }
 
-    const tables = await Table.find();
-    res.status(200).json(tables);
+   
 
 })
 
@@ -23,6 +22,8 @@ const getAllTable = asyncHandler(async(req, res) => {
 const reserveSeat = asyncHandler(async(req, res) => {
     const { tableNumber, seatNumber, name } = req.body;
     const table = await Table.findOne({ tableNumber });
+
+
 
     const events = Event.find({ user: req.user._id })
 
@@ -58,7 +59,7 @@ const addTable = asyncHandler(async(req, res) => {
         const { tableNumber, seats } = req.body;
         const table = new Table({ tableNumber, seats });
         await table.save();
-        res.status.json(table);
+        res.status(200).json(table);
     } catch (error) {
         res.status(400)
         throw new Error(error)
