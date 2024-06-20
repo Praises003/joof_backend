@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler')
 
 const Table = require("../models/tableModel")
 
+const Event = require("../models/eventModel")
 const getAllTable = asyncHandler(async(req, res) => {
     try {
         const tables = await Table.find();
@@ -22,6 +23,14 @@ const getAllTable = asyncHandler(async(req, res) => {
 const reserveSeat = asyncHandler(async(req, res) => {
     const { tableNumber, seatNumber, name } = req.body;
     const table = await Table.findOne({ tableNumber });
+
+    const events = Event.find({ user: req.user._id })
+
+    if(!events) {
+        res.status(400)
+
+        throw new Error("Book An Event before reserving a seat")
+    }
 
 
     if (table) {
