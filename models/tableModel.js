@@ -9,6 +9,10 @@ const tableSchema = new mongoose.Schema({
         reservedBy: { type: String, default: '' },
       },
     ],
+    event: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Event"
+  }
   });
 
 

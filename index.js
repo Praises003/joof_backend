@@ -17,6 +17,7 @@ const stripeRoute = require("./routes/stripeRoute")
 const textRoute = require("./routes/textRoute")
 const textsRoute = require("./routes/textsRoutes")
 const imageRoute = require("./routes/imageRoute")
+const packageRoute = require("./routes/packageRoute")
 
 const tranRoute = require("./routes/tranRoute")
 
@@ -68,6 +69,7 @@ app.use('/create-checkout-session', stripeRoute)
 app.use('/transaction', tranRoute)
 app.use('/api/upload', imageRoute)
 app.use('/api/table', tableRoute)
+app.use('/api/package', packageRoute)
 // Middleware to correct the protocol if it's forwarded from a proxy
 app.use((req, res, next) => {
   if (req.headers['x-forwarded-proto'] === 'https') {

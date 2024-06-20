@@ -10,6 +10,12 @@ const createEvent = asyncHandler(async(req, res) => {
         throw new Error("Please Fill Up all the Fields")
     }
 
+    // Check if the provided date is in the past
+    if (new Date(date) < new Date()) {
+        res.status(400);
+        throw new Error("Event date cannot be in the past");
+    }
+
     const eventExist =  await Event.findOne({ date })
 
     if(eventExist) {
@@ -70,6 +76,12 @@ const getAllEventsByUser = async (req, res) => {
 
 const renameEvent = asyncHandler(async(req, res) => {
     const { eventId, title, description, type, date } = req.body
+
+    // Check if the provided date is in the past
+    if (new Date(date) < new Date()) {
+        res.status(400);
+        throw new Error("Cannot use past date, Set A Recent date");
+    }
 
     const renamedEvent = await Event.findByIdAndUpdate(eventId, {
         title,

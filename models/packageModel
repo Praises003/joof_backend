@@ -1,0 +1,23 @@
+const mongoose = require("mongoose")
+
+const packageSchema = new mongoose.Schema({
+    name: String,
+    description: String,
+    price: Number,
+    image: {
+        type: String,
+        default: "https://cdn.pixabay.com/photo/2020/11/22/11/53/box-5766346_1280.jpg"
+    }
+
+    
+    
+  }, 
+  
+  {
+    timestamps: true
+});
+
+
+  const Packages = mongoose.model('Packages', packageSchema);
+
+  module.exports = Packages

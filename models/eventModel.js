@@ -1,6 +1,8 @@
 const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
 
+const Table = require("./tableModel")
+
 const eventSchema = new mongoose.Schema({
     title: { 
         type: String, 
@@ -24,6 +26,11 @@ const eventSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
+    price: {
+        type: Number,
+        default: 0
+
+    },
 
     image: {
         type: String,
@@ -34,6 +41,26 @@ const eventSchema = new mongoose.Schema({
 }, {
     timestamps: true
 })
+
+eventSchema.post('save', async function(event) {
+    try {
+        // Find all tables associated with this event
+        const tablesToUpdate = await Table.find({ event: event._id });
+
+        // Update the reserved status of each table's seats
+        for (const table of tablesToUpdate) {
+            table.seats.forEach(seat => {
+                if (seat.isReserved && (!event.date || new Date() > event.date)) {
+                    seat.isReserved = false; // Set isReserved to false if event has ended
+                }
+            });
+            await table.save();
+        }
+    } catch (error) {
+        console.error("Error updating tables:", error);
+        throw error; // Handle or propagate the error as needed
+    }
+});
 
 
 
