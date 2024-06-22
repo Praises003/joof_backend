@@ -5,8 +5,8 @@ const { getAllTable, reserveSeat, addTable } = require("../controllers/tableCont
 
 const router = express.Router()
 
-router.get('/', getAllTable)
-router.post('/reserve', reserveSeat)
-router.post('/', addTable)
+router.get('/', protect, getAllTable)
+router.post('/reserve',protect, reserveSeat)
+router.post('/', protect, addTable)
 
 module.exports = router

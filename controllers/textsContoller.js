@@ -53,6 +53,19 @@ const updateMission = asyncHandler(async (req, res) => {
     }
 })
 
+// update About Section
+const updateAbout = asyncHandler(async (req, res) => {
+    try {
+        const { text } = req.body;
+        const updatedText = await Text.findOneAndUpdate({}, { aboutText: text}, {new: true, upsert: true} );
+
+        res.json(updatedText)
+    } catch (error) {
+        res.status(500)
+        throw new Error({ message: error.message });
+    }
+})
+
 //update Welcome
 const updateWelcome = asyncHandler(async (req, res) => {
     try {
@@ -118,6 +131,55 @@ const updateDed = asyncHandler(async (req, res) => {
         throw new Error({ message: error.message });
     }
 })
+
+const updateUnInter = asyncHandler(async (req, res) => {
+    try {
+        const { text } = req.body;
+        const updatedText = await Text.findOneAndUpdate({}, { uninter: text}, {new: true, upsert: true} );
+
+        res.json(updatedText)
+    } catch (error) {
+        res.status(500)
+        throw new Error({ message: error.message });
+    }
+})
+
+const updateEvent = asyncHandler(async (req, res) => {
+    try {
+        const { text } = req.body;
+        const updatedText = await Text.findOneAndUpdate({}, { event: text}, {new: true, upsert: true} );
+
+        res.json(updatedText)
+    } catch (error) {
+        res.status(500)
+        throw new Error({ message: error.message });
+    }
+})
+
+const updateRoom = asyncHandler(async (req, res) => {
+    try {
+        const { text } = req.body;
+        const updatedText = await Text.findOneAndUpdate({}, { room: text}, {new: true, upsert: true} );
+
+        res.json(updatedText)
+    } catch (error) {
+        res.status(500)
+        throw new Error({ message: error.message });
+    }
+})
+
+const updateSecurity = asyncHandler(async (req, res) => {
+    try {
+        const { text } = req.body;
+        const updatedText = await Text.findOneAndUpdate({}, { security: text}, {new: true, upsert: true} );
+
+        res.json(updatedText)
+    } catch (error) {
+        res.status(500)
+        throw new Error({ message: error.message });
+    }
+})
+
 
 const updateHighly = asyncHandler(async (req, res) => {
     try {
@@ -242,4 +304,4 @@ const updateTextSix = asyncHandler(async (req, res) => {
 })
 
 
-module.exports = {getText, updateVision, updateBanner, updateMission, updateWelcome, updateSec, updateProf, updateProv, updateDed, updateHighly, updateAccess, updateSuccess, updateFac, updateTextOne, updateTextTwo, updateTextThree, updateTextFour, updateTextFive, updateTextSix}
+module.exports = {getText, updateVision, updateBanner, updateMission, updateWelcome, updateSec, updateProf, updateProv, updateDed, updateHighly, updateAccess, updateSuccess, updateFac, updateTextOne, updateTextTwo, updateTextThree, updateTextFour, updateTextFive, updateTextSix, updateAbout, updateUnInter, updateEvent, updateRoom, updateSecurity}
