@@ -57,7 +57,7 @@ const updateMission = asyncHandler(async (req, res) => {
 const updateAbout = asyncHandler(async (req, res) => {
     try {
         const { text } = req.body;
-        const updatedText = await Text.findOneAndUpdate({}, { aboutText: text}, {new: true, upsert: true} );
+        const updatedText = await Text.findOneAndUpdate({}, { about: text}, {new: true, upsert: true} );
 
         res.json(updatedText)
     } catch (error) {
