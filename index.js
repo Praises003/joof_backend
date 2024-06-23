@@ -18,7 +18,7 @@ const textRoute = require("./routes/textRoute")
 const textsRoute = require("./routes/textsRoutes")
 const imageRoute = require("./routes/imageRoute")
 const packageRoute = require("./routes/packageRoute")
-
+const videoRoute = require("./routes/videoRoute")
 const tranRoute = require("./routes/tranRoute")
 
 const tableRoute = require("./routes/tableRoute")
@@ -52,7 +52,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/tmp', express.static(path.join(process.cwd(), 'tmp')));
 app.use(fileUpload({
   useTempFiles: true,
-  tempFileDir: "/tmp",
+  
 
 }))
 
@@ -70,6 +70,7 @@ app.use('/transaction', tranRoute)
 app.use('/api/upload', imageRoute)
 app.use('/api/table', tableRoute)
 app.use('/api/package', packageRoute)
+app.use('/api/video', videoRoute)
 // Middleware to correct the protocol if it's forwarded from a proxy
 app.use((req, res, next) => {
   if (req.headers['x-forwarded-proto'] === 'https') {

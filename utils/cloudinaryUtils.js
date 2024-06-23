@@ -31,6 +31,20 @@ const deleteImageFromCloudinary = async (publicId) => {
       throw error;
     }
   };
+
+  // Function to upload a video to Cloudinary
+const uploadVideoToCloudinary = async (file) => {
+  try {
+        const result = await cloudinary.uploader.upload(file, {
+      resource_type: 'video',
+      folder: 'videos', // Optional folder to store the uploaded videos in Cloudinary
+    });
+    return { public_id: result.public_id, url: result.secure_url };
+  } catch (error) {
+    console.error('Error uploading video to Cloudinary:', error);
+    throw error;
+  }
+};
   
 
-module.exports = { uploadImageToCloudinary, deleteImageFromCloudinary };
+module.exports = { uploadImageToCloudinary, deleteImageFromCloudinary, uploadVideoToCloudinary };
