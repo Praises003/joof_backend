@@ -26,7 +26,7 @@ const tableRoute = require("./routes/tableRoute")
 
 connectDb()
 const corsOptions = {
-   origin: ['http://localhost:3000', 'https://joof.onrender.com', 'https://rufuselemoeventcentre.com', 'http://rufuselemoeventcentre.com/'],
+   origin: ['http://localhost:3000', '', 'https://rufuselemoeventcentre.com', 'http://rufuselemoeventcentre.com/'],
    credentials: true,
    exposedheaders: ["set-cookie"]
  };
