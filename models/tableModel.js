@@ -2,11 +2,13 @@ const mongoose = require("mongoose")
 
 const tableSchema = new mongoose.Schema({
     tableNumber: Number,
+    
     seats: [
       {
         seatNumber: Number,
         isReserved: { type: Boolean, default: false },
         reservedBy: { type: String, default: '' },
+        tableName: String,
       },
     ],
     event: {

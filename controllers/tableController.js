@@ -20,8 +20,13 @@ const getAllTable = asyncHandler(async(req, res) => {
 // Reserve a seat
 
 const reserveSeat = asyncHandler(async(req, res) => {
-    const { tableNumber, seatNumber, name } = req.body;
-    const table = await Table.findOne({ tableNumber });
+    const { tableNumber, tableName, seatNumber, name } = req.body;
+    let table;
+    if (tableName) {
+      table = await Table.findOne({ tableNumber, tableName });
+    } else {
+      table = await Table.findOne({ tableNumber });
+    }
 
 
 
@@ -39,6 +44,7 @@ const reserveSeat = asyncHandler(async(req, res) => {
         if (seat && !seat.isReserved) {
           seat.isReserved = true;
           seat.reservedBy = name;
+          seat.tableName = table.tableName;
           await table.save();
           res.json({ success: true });
         } else {
@@ -57,7 +63,7 @@ const addTable = asyncHandler(async(req, res) => {
 
     try {
         const { tableNumber, seats } = req.body;
-        const table = new Table({ tableNumber, seats });
+        const table = new Table({ tableNumber,  seats });
         await table.save();
         res.status(200).json(table);
     } catch (error) {
