@@ -11,7 +11,7 @@ router.get('/', getAllManagement);
 router.post('/', createManagement);
 
 // Update a member
-router.patch('/:id', updateManagement);
+router.put('/:id', updateManagement);
 
 // Delete a member
 router.delete('/:id', deleteManagement);

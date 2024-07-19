@@ -22,16 +22,37 @@ const createManagement = asyncHandler(async (req, res) => {
 });
 
 // @desc    Update a member
-// @route   PATCH /api/members/:id
+// @route   PUT /api/members/:id
 // @access  Public
+
 const updateManagement = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, position, imageUrl, socialLinks } = req.body;
-  const updatedManagement = await Member.findByIdAndUpdate(id, { name, position, imageUrl, socialLinks }, { new: true });
-  if (!updatedManagement) {
-    return res.status(404).json({ success: false, message: 'Member not found' });
+  try {
+    const { name, position, imageUrl, socialLinks } = req.body;
+    const management = await Management.findById(id)
+
+    if (management) {
+      management.name = name || management.name
+      management.position = position || management.position 
+      management.imageUrl = imageUrl || management.imageUrl
+      management.socialLinks = socialLinks || management.socialLinks   
+  
+      const updatedManagement = await management.save()
+      res.status(200).json(updatedManagement)
+
+      } else {
+        res.status(404);
+        throw new Error('Management not found');
+    }
+    
+    
+  } catch (error) {
+    res.status(404);
+    throw new Error('Management not found');
+    
   }
-  res.status(200).json(updatedManagement);
+  
+  
 });
 
 // @desc    Delete a member

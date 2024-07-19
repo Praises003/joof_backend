@@ -11,7 +11,7 @@ router.get('/', getAllMembers);
 router.post('/', createMember);
 
 // Update a member
-router.patch('/:id', updateMember);
+router.put('/:id', updateMember);
 
 // Delete a member
 router.delete('/:id', deleteMember);

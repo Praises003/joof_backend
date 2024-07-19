@@ -27,10 +27,31 @@ const createMember = asyncHandler(async (req, res) => {
 const updateMember = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { name, position, imageUrl, socialLinks } = req.body;
-  const updatedMember = await Member.findByIdAndUpdate(id, { name, position, imageUrl, socialLinks }, { new: true });
-  if (!updatedMember) {
-    return res.status(404).json({ success: false, message: 'Member not found' });
+  try {
+    const { name, position, imageUrl, socialLinks } = req.body;
+    const member = await Member.findById(id)
+
+    if (member) {
+      member.name = name || member.name
+      member.position = position || member.position 
+      member.imageUrl = imageUrl || member.imageUrl
+      member.socialLinks = socialLinks || member.socialLinks   
+  
+      const updatedMember = await member.save()
+      res.status(200).json(updatedMember)
+
+      } else {
+        res.status(404);
+        throw new Error('Management not found');
+    }
+    
+    
+  } catch (error) {
+    res.status(404);
+    throw new Error('Management not found');
+    
   }
+ 
   res.status(200).json(updatedMember);
 });
 
