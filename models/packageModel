@@ -6,7 +6,7 @@ const packageSchema = new mongoose.Schema({
     price: Number,
     image: {
         type: String,
-        default: "https://cdn.pixabay.com/photo/2020/11/22/11/53/box-5766346_1280.jpg"
+       
     }
 
     
