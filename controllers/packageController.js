@@ -22,7 +22,7 @@ const getAllPackages = asyncHandler(async(req, res) => {
 })
 
 const createPackages = asyncHandler(async(req, res) => {
-    const {name, description, price } = req.body
+    const {name, description, price, image } = req.body
 
     if(!name || !description || !price) {
         res.status(400)
@@ -36,7 +36,7 @@ const createPackages = asyncHandler(async(req, res) => {
     }
     
     const newPackage = await Packages.create({
-        name, description, price
+        name, description, price, image
     })
 
     if (newPackage) {
@@ -52,8 +52,8 @@ const createPackages = asyncHandler(async(req, res) => {
 
 const updatePackages = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { name, description, price } = req.body;
-    console.log(req.params)
+    const { name, description, price, image } = req.body;
+
        try {
         const package = await Packages.findById(id);
 
@@ -61,6 +61,9 @@ const updatePackages = asyncHandler(async (req, res) => {
             package.name = name || package.name;
             package.description = description || package.description;
             package.price = price || package.price;
+            package.image = image || package.image
+
+            
 
             const updatedPackage = await package.save();
             res.status(200).json(updatedPackage);
