@@ -25,6 +25,7 @@ const deleteUploadRoute = require("./routes/deleteUploadRoute")
 const tableRoute = require("./routes/tableRoute")
 const memberRoute = require("./routes/memberRoute")
 const managementRoute = require("./routes/managementRoute")
+const contactTextRoute = require("./routes/contactTextRoute")
 
 
 connectDb()
@@ -78,6 +79,7 @@ app.use('/api/image', uploadRoute)
 app.use('/api/destroy', deleteUploadRoute)
 app.use('/api/member', memberRoute)
 app.use('/api/management', managementRoute)
+app.use('/api/contactText', contactTextRoute)
 
 // Middleware to correct the protocol if it's forwarded from a proxy
 app.use((req, res, next) => {
