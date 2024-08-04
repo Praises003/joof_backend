@@ -27,6 +27,7 @@ const memberRoute = require("./routes/memberRoute")
 const managementRoute = require("./routes/managementRoute")
 const contactTextRoute = require("./routes/contactTextRoute")
 const reviewRoute = require("./routes/reviewRoute")
+const corporateRoute = require("./routes/corporateRoute")
 
 
 connectDb()
@@ -82,6 +83,7 @@ app.use('/api/member', memberRoute)
 app.use('/api/management', managementRoute)
 app.use('/api/contactText', contactTextRoute)
 app.use('/api/reviews', reviewRoute)
+app.use('/api/corporate', corporateRoute)
 
 // Middleware to correct the protocol if it's forwarded from a proxy
 app.use((req, res, next) => {
