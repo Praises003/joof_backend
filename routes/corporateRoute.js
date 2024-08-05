@@ -37,12 +37,12 @@ router.put("/bannerImage", updateBannerImage);
 // Update Vision
 router.put("/visionText", updateVisionText);
 router.put("/visionImage", updateVisionImage);
-router.put("/visionDescription", updateVisionDescription);
+router.put("/visionDesc", updateVisionDescription);
 
 // Update Mission
 router.put("/mission", updateMission);
 router.put("/missionImage", updateMissionImage);
-router.put("/missionDescription", updateMissionDescription);
+router.put("/missionDes", updateMissionDescription);
 
 // Update Value
 router.put("/value", updateValue);
