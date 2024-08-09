@@ -1,6 +1,9 @@
 const mongoose = require("mongoose")
 
 const profSchema = new mongoose.Schema({
+    title: {
+        type: String
+    },
     name: { 
         type: String, 
     },
@@ -9,6 +12,9 @@ const profSchema = new mongoose.Schema({
         type: String
     },
     description: {
+        type: String
+    },
+    email: {
         type: String
     }
     
