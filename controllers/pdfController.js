@@ -9,13 +9,13 @@ const Pdf = require("../models/pdfModel")
 
 const createPdf = asyncHandler(async (req, res) => {
     try {
-        console.log(req.files)
+
         if (!req.files || !req.files.pdf) {
             return res.status(400).json({ message: 'No files were uploaded.' });
         }
 
         const pdf = req.files.pdf;
-        
+
         const fileName = Date.now() + path.extname(pdf.name);
         const uploadPath = path.join(__dirname, '..', 'uploads', Date.now() + path.extname(pdf.name));
 
