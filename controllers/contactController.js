@@ -5,7 +5,7 @@ const Contact = require("../models/contactModel");
 
 const getContact = asyncHandler(async (req, res) => {
     try {
-        const contactData = await Contact.findOne().sort({ createdAt: -1 })
+        const contactData = await Contact.find().sort({ createdAt: -1 })
 
         // Check if data was found
         if (!contactData) {
